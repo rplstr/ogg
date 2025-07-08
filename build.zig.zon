@@ -1,0 +1,17 @@
+.{
+    .name = .ogg,
+    .version = "1.0.0",
+    .dependencies = .{
+        .libogg = .{
+            .url = "git+https://github.com/andrewrk/libogg#a0dc88e815fdd278b412d9b5ba09221f20517e03",
+            .hash = "libogg-1.3.6-3-ZBKq7fQUAgCz4fszMXyS-erQljD2tL5Z6A0Kh4B1T4qk",
+        },
+    },
+    .fingerprint = 0x45a05c94d1349f45,
+    .paths = .{
+        "build.zig",
+        "ogg.zig",
+        "README.md",
+        "examples",
+    },
+}
