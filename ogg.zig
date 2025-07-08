@@ -4,7 +4,7 @@ pub const c = @cImport({
     @cInclude("ogg/ogg.h");
 });
 
-pub const OggError = error{
+pub const Error = error{
     InternalError,
     PacketInFailed,
     PacketOutHole,
@@ -101,7 +101,7 @@ pub const StreamState = struct {
     }
 
     /// Submits a packet to the stream for encoding.
-    pub fn packetIn(self: *StreamState, packet: *Packet) OggError!void {
+    pub fn packetIn(self: *StreamState, packet: *Packet) Error!void {
         packet.c_packet.packet = @constCast(packet.bytes.ptr);
         packet.c_packet.bytes = @intCast(packet.bytes.len);
         packet.c_packet.b_o_s = @intFromBool(packet.is_beginning_of_stream);
@@ -110,15 +110,15 @@ pub const StreamState = struct {
         packet.c_packet.packetno = packet.packet_num;
 
         if (c.ogg_stream_packetin(&self.c_stream, &packet.c_packet) != 0) {
-            return OggError.PacketInFailed;
+            return Error.PacketInFailed;
         }
     }
 
     /// Retrieves a packet from the stream during decoding.
     /// Returns `true` if a packet was retrieved, `false` if more data is needed.
-    pub fn packetOut(self: *StreamState, packet: *Packet) OggError!bool {
+    pub fn packetOut(self: *StreamState, packet: *Packet) Error!bool {
         const ret = c.ogg_stream_packetout(&self.c_stream, &packet.c_packet);
-        if (ret < 0) return OggError.PacketOutHole;
+        if (ret < 0) return Error.PacketOutHole;
         if (ret == 0) return false;
 
         packet.bytes = packet.c_packet.packet[0..@intCast(packet.c_packet.bytes)];
@@ -139,9 +139,9 @@ pub const StreamState = struct {
     }
 
     /// Submits a page to the stream for decoding.
-    pub fn pageIn(self: *StreamState, page: *Page) OggError!void {
+    pub fn pageIn(self: *StreamState, page: *Page) Error!void {
         if (c.ogg_stream_pagein(&self.c_stream, &page.c_page) != 0) {
-            return OggError.PageInFailed;
+            return Error.PageInFailed;
         }
     }
 
@@ -264,30 +264,30 @@ pub const PackBuffer = struct {
 
     /// Reads a specified number of bits from the buffer.
     /// Returns the value read, or -1 on error (e.g., reading past end of buffer).
-    pub fn read(self: *PackBuffer, bit: c_int) OggError!c_long {
+    pub fn read(self: *PackBuffer, bit: c_int) Error!c_long {
         const ret = c.oggpack_read(&self.c_packbuffer, bit);
-        if (ret == -1) return OggError.ReadPastEnd;
+        if (ret == -1) return Error.ReadPastEnd;
         return ret;
     }
 
     /// Reads one bit from the buffer.
-    pub fn read1(self: *PackBuffer) OggError!c_long {
+    pub fn read1(self: *PackBuffer) Error!c_long {
         const ret = c.oggpack_read1(&self.c_packbuffer);
-        if (ret == -1) return OggError.ReadPastEnd;
+        if (ret == -1) return Error.ReadPastEnd;
         return ret;
     }
 
     /// Peeks at the next `bits` number of bits without advancing the read pointer.
-    pub fn look(self: *const PackBuffer, bit: c_int) OggError!c_long {
+    pub fn look(self: *const PackBuffer, bit: c_int) Error!c_long {
         const ret = c.oggpack_look(@constCast(&self.c_packbuffer), bit);
-        if (ret == -1) return OggError.ReadPastEnd;
+        if (ret == -1) return Error.ReadPastEnd;
         return ret;
     }
 
     /// Peeks at the next bit.
-    pub fn look1(self: *const PackBuffer) OggError!c_long {
+    pub fn look1(self: *const PackBuffer) Error!c_long {
         const ret = c.oggpack_look1(@constCast(&self.c_packbuffer));
-        if (ret == -1) return OggError.ReadPastEnd;
+        if (ret == -1) return Error.ReadPastEnd;
         return ret;
     }
 
