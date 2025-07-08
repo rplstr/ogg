@@ -2,7 +2,7 @@
 
 # ogg
 
-Ogg is a free, open container format maintained by the [Xiph.Org Foundation](https://www.xiph.org/).
+Ogg is a multimedia container format, and the native file and stream format for the Xiph.org multimedia codecs. 
 
 </div>
 
