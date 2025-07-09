@@ -10,6 +10,7 @@
     .fingerprint = 0x45a05c94d1349f45,
     .paths = .{
         "build.zig",
+        "build.zig.zon",
         "ogg.zig",
         "README.md",
         "examples",
