@@ -36,7 +36,7 @@ pub fn main() void {
         .optimize = optimize,
     });
     exe.root_module.addImport("ogg", ogg.module("ogg"));
-    exe.linkLibrary(ogg_dep.artifact("ogg"));
+    exe.linkLibrary(ogg.artifact("ogg"));
     ```
 
 ## Examples
