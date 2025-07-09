@@ -9,7 +9,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    const ogg = b.createModule(.{
+    const ogg = b.addModule("ogg", .{
         .root_source_file = b.path("ogg.zig"),
         .target = target,
         .optimize = optimize,
